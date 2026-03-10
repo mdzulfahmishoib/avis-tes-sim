@@ -72,7 +72,7 @@ export function ResultsFilters() {
         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
         <Input
           placeholder="Cari nama atau email..."
-          className="pl-9 bg-white dark:bg-slate-950"
+          className="pl-9 bg-white dark:bg-transparent"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
@@ -80,7 +80,7 @@ export function ResultsFilters() {
 
       <div className="w-full md:w-[150px]">
         <Select value={status} onValueChange={handleStatusChange}>
-          <SelectTrigger className="bg-white dark:bg-slate-950">
+          <SelectTrigger className="bg-white dark:bg-transparent">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>
@@ -93,7 +93,7 @@ export function ResultsFilters() {
 
       <div className="w-full md:w-[150px]">
         <Select value={simType} onValueChange={handleSimTypeChange}>
-          <SelectTrigger className="bg-white dark:bg-slate-950">
+          <SelectTrigger className="bg-white dark:bg-transparent">
             <SelectValue placeholder="SIM Type" />
           </SelectTrigger>
           <SelectContent>

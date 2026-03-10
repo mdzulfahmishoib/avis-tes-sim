@@ -60,14 +60,19 @@ src/
 │           │   ├── page.tsx                  # Admin users table
 │           │   ├── create-admin-modal.tsx    # Create admin modal
 │           │   └── reset-password-modal.tsx  # Reset password modal
-│           └── results/
-│               └── page.tsx    # Test results table
+│           ├── results/
+│           │   └── page.tsx    # Test results table
+│           └── feedbacks/
+│               └── page.tsx    # User feedbacks management table
 ├── components/
 │   ├── admin-sidebar.tsx       # Fixed sidebar navigation for admin
+│   ├── feedback-form.tsx       # Public feedback form with captcha
 │   ├── start-quiz-modal.tsx    # Public quiz start modal (captures participant info)
 │   ├── theme-provider.tsx      # next-themes ThemeProvider wrapper
 │   ├── theme-toggle.tsx        # Sun/Moon toggle button (supports hideText prop)
 │   └── ui/                     # shadcn/ui components
+│       ├── button.tsx          # Client-side Button component
+│       └── button-variants.ts  # Server-safe button styles (CVA)
 ├── lib/
 │   ├── supabase/
 │   │   ├── client.ts           # Browser Supabase client (createBrowserClient)
@@ -82,17 +87,18 @@ src/
 
 ### Public (User-Facing)
 - **Landing Page `/`**: Hero section, feature highlights, "Mulai Simulasi Tes" button, Theme Toggle in header
-- **Start Quiz Modal**: Captures participant `Nama`, `Email`, and `Jenis SIM` (A or C) with visual card-style SIM type selector (Car/Bike icons). Stored in `sessionStorage`.
-- **Quiz Engine `/quiz`**: Fetches questions filtered by `sim_type`. Displays sequentially with per-question timers (25s for Persepsi Bahaya, 20s for others). Auto-advances on timeout. No going back.
-- **Result Page `/result`**: Shows total score, per-category breakdown, Pass/Fail status. Result ID from `sessionStorage`.
+- **Start Quiz Modal**: Captures participant `Nama`, `Email`, and `Jenis SIM` (A or C) with visual card-style SIM type selector.
+- **Quiz Engine `/quiz`**: Fetches questions filtered by `sim_type`. All questions have a **25s timer**. Includes persistent audio logic for "Persepsi Bahaya" and a Theme Toggle in the header.
+- **Result Page `/result`**: Shows total score, per-category breakdown, Pass/Fail status. Includes a **Donation Card** and **Feedback Form** (with captcha) on the right column.
 
 ### Admin Portal `/admin`
 - **Login `/admin/login`**: Email/password via Supabase Auth server action.
 - **Dashboard `/admin`**: Stats cards: total admin users, questions, test results.
-- **Question Bank `/admin/questions`**: Table with Category, Preview, SIM Type badge, Correct Answer, Media, Actions. Server-side pagination (10 per page).
-- **Add/Edit Questions**: Modals with Category + SIM Type selectors (side by side), Question Text, Media upload (image/video up to 10MB), dynamic Options/Correct Answer section.
+- **Question Bank `/admin/questions`**: Table with Category, Preview, SIM Type badge, Correct Answer (truncated), Media, Actions. Includes search and category filters.
+- **Add/Edit Questions**: Modals with Category + SIM Type selectors, Question Text, Media upload, dynamic Options/Correct Answer section.
 - **User Management `/admin/users`**: Create admin accounts, reset passwords.
-- **Test Results `/admin/results`**: View all test submissions.
+- **Test Results `/admin/results`**: View all test submissions with search and status filters.
+- **Feedbacks `/admin/feedbacks`**: View user-submitted critiques, suggestions, and corrections.
 
 ---
 
@@ -136,11 +142,24 @@ src/
 
 ---
 
+### `feedbacks`
+| Column            | Type        | Notes                                          |
+|-------------------|-------------|------------------------------------------------|
+| id                | UUID (PK)   |                                                |
+| participant_name  | TEXT        |                                                |
+| participant_email | TEXT        |                                                |
+| type              | TEXT        | 'General', etc.                                |
+| content           | TEXT        | The actual feedback text                       |
+| created_at        | TIMESTAMPTZ |                                                |
+
+---
+
 ## Question Distribution (per quiz session)
-- **Persepsi Bahaya**: 25 questions (timer: 25s each)
-- **Wawasan**: 20 questions (timer: 20s each)
-- **Pengetahuan**: 20 questions (timer: 20s each)
+- **Persepsi Bahaya**: 25 questions
+- **Wawasan**: 20 questions
+- **Pengetahuan**: 20 questions
 - **Total**: 65 questions
+- **Timer**: **25 seconds** for ALL types
 - **Passing score**: ≥ 70 / 100
 
 ## Persepsi Bahaya Special Logic

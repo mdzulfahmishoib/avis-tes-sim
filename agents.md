@@ -142,6 +142,13 @@ src/lib/supabase/
 - [ ] Brand-colored buttons include `text-white`
 - [ ] Logo/brand text includes `dark:text-white`
 
+### Audio & Video Accessibility
+- Always add `playsInline` and `webkit-playsinline="true"` to `<video>` tags for iOS compatibility.
+- For features requiring auto-play audio (like "Persepsi Bahaya"), use the **Audio Priming** pattern:
+  - Keep a hidden `<audio ref={audioRef} />` in the root of the page.
+  - Trigger a silent `.play()` on a user interaction (like a "Start" button) to unlock the audio context for the session.
+  - Subsequent audio changes should update `audioRef.current.src` and call `.play()`.
+
 ---
 
 ## 6. Key Third-Party Package Notes
@@ -153,5 +160,5 @@ src/lib/supabase/
 | `lucide-react`  | All icons. Import named. e.g. `import { Trash2 } from 'lucide-react'` |
 | `uuid`          | `import { v4 as uuidv4 } from 'uuid'` — used in media upload  |
 | `@supabase/ssr` | Used for SSR-safe Supabase client with cookie handling        |
-| `class-variance-authority` | Used by Button component for `buttonVariants()`  |
+| `class-variance-authority` | Use `@/components/ui/button-variants` for Server-safe styles |
 | `clsx` + `tailwind-merge` | Exposed via `cn()` in `@/lib/utils`               |

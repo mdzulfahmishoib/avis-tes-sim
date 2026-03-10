@@ -1,3 +1,6 @@
+-- 0. Enable Extensions
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 -- 1. Create custom types
 CREATE TYPE question_category AS ENUM ('Persepsi Bahaya', 'Wawasan', 'Pengetahuan');
 
@@ -14,7 +17,9 @@ CREATE TABLE questions (
     category question_category NOT NULL,
     text TEXT NOT NULL,
     media_url TEXT,
-    media_type TEXT, -- 'video' or 'image'
+    media_type TEXT, -- 'video', 'image', or 'audio'
+    audio_url TEXT, -- Specifically for Persepsi Bahaya audio
+    sim_type TEXT NOT NULL DEFAULT 'A', -- 'A' or 'C'
     options JSONB NOT NULL DEFAULT '[]'::jsonb, -- Array of string options
     correct_answer TEXT NOT NULL,
     created_at TIMESTAMPTZ DEFAULT NOW()

@@ -58,7 +58,7 @@ export default async function Home() {
           <div className="container mx-auto max-w-6xl">
             <div className="grid md:grid-cols-3 gap-8">
               <div className="p-6 rounded-2xl border bg-card shadow-sm hover:shadow-md transition-shadow">
-                <div className="h-12 w-12 bg-blue-100 dark:bg-blue-900/40 rounded-lg flex items-center justify-center mb-4 text-[#21479B] dark:text-white">
+                <div className="h-12 w-12 bg-blue-100 dark:bg-[#21479B] rounded-lg flex items-center justify-center mb-4 text-[#21479B] dark:text-white">
                   <Timer className="h-6 w-6" />
                 </div>
                 <h3 className="text-xl font-bold mb-2">Batas Waktu Akurat</h3>
@@ -67,7 +67,7 @@ export default async function Home() {
                 </p>
               </div>
               <div className="p-6 rounded-2xl border bg-card shadow-sm hover:shadow-md transition-shadow">
-                <div className="h-12 w-12 bg-blue-100 dark:bg-blue-900/40 rounded-lg flex items-center justify-center mb-4 text-[#21479B] dark:text-white">
+                <div className="h-12 w-12 bg-blue-100 dark:bg-[#21479B] rounded-lg flex items-center justify-center mb-4 text-[#21479B] dark:text-white">
                   <BookOpen className="h-6 w-6" />
                 </div>
                 <h3 className="text-xl font-bold mb-2">Tiga Materi Utama</h3>
@@ -76,7 +76,7 @@ export default async function Home() {
                 </p>
               </div>
               <div className="p-6 rounded-2xl border bg-card shadow-sm hover:shadow-md transition-shadow">
-                <div className="h-12 w-12 bg-blue-100 dark:bg-blue-900/40 rounded-lg flex items-center justify-center mb-4 text-[#21479B] dark:text-white">
+                <div className="h-12 w-12 bg-blue-100 dark:bg-[#21479B] rounded-lg flex items-center justify-center mb-4 text-[#21479B] dark:text-white">
                   <Award className="h-6 w-6" />
                 </div>
                 <h3 className="text-xl font-bold mb-2">Sertifikat Hasil</h3>
@@ -146,7 +146,7 @@ export default async function Home() {
       <footer className="border-t py-8 px-4 bg-muted/30 text-center">
         <div className="container mx-auto">
           <p className="text-muted-foreground text-sm">
-            © {new Date().getFullYear()} AVIS SIM Simulator. Dikembangkan untuk edukasi keselamatan berkendara.
+            © {new Date().getFullYear()} AVIS SIM Simulator.
           </p>
         </div>
       </footer>

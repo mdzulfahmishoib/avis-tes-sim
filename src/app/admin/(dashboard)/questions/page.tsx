@@ -1,7 +1,8 @@
 import { createClient } from "@/lib/supabase/server"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Button, buttonVariants } from "@/components/ui/button"
+import { Button } from "@/components/ui/button"
+import { buttonVariants } from "@/components/ui/button-variants"
 import { deleteQuestion } from "./actions"
 import { CreateQuestionModal } from "./create-question-modal"
 import { EditQuestionModal } from "./edit-question-modal"
@@ -94,7 +95,7 @@ export default async function AdminQuestionsPage(props: {
                         SIM {q.sim_type}
                       </span>
                     </TableCell>
-                    <TableCell className="text-sm text-green-600">
+                    <TableCell className="text-sm text-green-600 max-w-[150px] truncate" title={q.correct_answer}>
                       {q.correct_answer}
                     </TableCell>
                     <TableCell>

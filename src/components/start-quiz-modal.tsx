@@ -19,7 +19,7 @@ import { Car, Bike } from "lucide-react"
 
 export function StartQuizModal() {
   const [open, setOpen] = useState(false)
-  const [simType, setSimType] = useState("A")
+  const [simType, setSimType] = useState("C")
   const router = useRouter()
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -60,11 +60,11 @@ export function StartQuizModal() {
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
               <Label htmlFor="name">Nama Lengkap</Label>
-              <Input id="name" name="name" placeholder="Budi Santoso" required />
+              <Input id="name" name="name" placeholder="Masukkan nama Anda" required />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" name="email" type="email" placeholder="budi@example.com" required />
+              <Input id="email" name="email" type="email" placeholder="contoh@email.com" required />
             </div>
 
             <div className="grid gap-2 mt-2">
@@ -73,26 +73,26 @@ export function StartQuizModal() {
 
                 <button
                   type="button"
-                  onClick={() => setSimType("A")}
-                  className={`flex items-center justify-center gap-2 p-4 rounded-xl border-2 transition-all ${simType === "A"
-                      ? "border-[#21479B] bg-blue-50 dark:bg-blue-900/20 text-[#21479B] dark:text-blue-400 font-bold shadow-sm"
-                      : "border-muted bg-white dark:bg-transparent text-muted-foreground hover:border-muted-foreground"
-                    }`}
-                >
-                  <Car className={`h-6 w-6 ${simType === "A" ? "scale-110" : ""}`} />
-                  <span>SIM A (Mobil)</span>
-                </button>
-
-                <button
-                  type="button"
                   onClick={() => setSimType("C")}
                   className={`flex items-center justify-center gap-2 p-4 rounded-xl border-2 transition-all ${simType === "C"
-                      ? "border-[#21479B] bg-blue-50 dark:bg-blue-900/20 text-[#21479B] dark:text-blue-400 font-bold shadow-sm"
-                      : "border-muted bg-white dark:bg-transparent text-muted-foreground hover:border-muted-foreground"
+                    ? "border-orange-500 bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 font-bold shadow-sm"
+                    : "border-muted bg-white dark:bg-transparent text-muted-foreground hover:border-muted-foreground"
                     }`}
                 >
                   <Bike className={`h-6 w-6 ${simType === "C" ? "scale-110" : ""}`} />
                   <span>SIM C (Motor)</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setSimType("A")}
+                  className={`flex items-center justify-center gap-2 p-4 rounded-xl border-2 transition-all ${simType === "A"
+                    ? "border-[#21479B] bg-blue-50 dark:bg-blue-900/20 text-[#21479B] dark:text-blue-400 font-bold shadow-sm"
+                    : "border-muted bg-white dark:bg-transparent text-muted-foreground hover:border-muted-foreground"
+                    }`}
+                >
+                  <Car className={`h-6 w-6 ${simType === "A" ? "scale-110" : ""}`} />
+                  <span>SIM A (Mobil)</span>
                 </button>
 
               </div>

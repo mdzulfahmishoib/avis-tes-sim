@@ -5,14 +5,12 @@ import { useRouter } from "next/navigation"
 import { Progress } from "@/components/ui/progress"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Label } from "@/components/ui/label"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Timer, AlertCircle, Volume2, X } from "lucide-react"
+import { Timer, AlertCircle, UserCheck, CheckCircle2, XCircle } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { submitQuizResult } from "./actions"
 import { toast } from "sonner"
-import { cn } from "@/lib/utils"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 type Question = {
   id: string
@@ -34,7 +32,7 @@ export default function QuizPage() {
   const [answers, setAnswers] = useState<Record<number, string>>({})
   const [timeLeft, setTimeLeft] = useState(0)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [showBanner, setShowBanner] = useState(true)
+  const [isQuizStarted, setIsQuizStarted] = useState(false)
   const audioRef = useRef<HTMLAudioElement | null>(null)
 
   // 1. Check for participant data
@@ -87,8 +85,7 @@ export default function QuizPage() {
 
       if (all.length > 0) {
         // Set initial timer
-        const cat = all[0].category
-        setTimeLeft(cat === "Persepsi Bahaya" ? 25 : 20)
+        setTimeLeft(25)
       }
     }
 
@@ -97,74 +94,40 @@ export default function QuizPage() {
 
   const currentQuestion = questions[currentIndex]
 
+  // 4. Audio Control Logic
+  const startAudioContext = () => {
+    if (audioRef.current) {
+      audioRef.current.play().catch(() => { })
+    }
+  }
+
   // Auto-play audio for Persepsi Bahaya questions
   useEffect(() => {
-    if (!currentQuestion || currentQuestion.category !== 'Persepsi Bahaya' || !currentQuestion.audio_url) return
-    // Stop any previous audio first
+    if (!isQuizStarted || !currentQuestion || currentQuestion.category !== 'Persepsi Bahaya' || !currentQuestion.audio_url) return
+
     if (audioRef.current) {
       audioRef.current.pause()
       audioRef.current.currentTime = 0
+      audioRef.current.src = currentQuestion.audio_url
+      audioRef.current.load()
+
+      const playPromise = audioRef.current.play()
+      if (playPromise !== undefined) {
+        playPromise.catch(error => {
+          console.warn("Autoplay blocked or failed:", error)
+        })
+      }
     }
-    const audio = new Audio(currentQuestion.audio_url)
-    audioRef.current = audio
-    audio.play().catch(() => {
-      // Browser may block autoplay before user interaction — silently ignore
-    })
+
     return () => {
-      audio.pause()
+      if (audioRef.current) {
+        audioRef.current.pause()
+      }
     }
-  }, [currentIndex, currentQuestion])
-
-  // Auto-dismiss banner after 7 seconds
-  useEffect(() => {
-    if (!showBanner) return
-    const timer = setTimeout(() => {
-      setShowBanner(false)
-    }, 7000)
-    return () => clearTimeout(timer)
-  }, [showBanner])
-
-  // 3. Auto Next Logic
-  const handleNext = useCallback(async () => {
-    if (currentIndex < questions.length - 1) {
-      const nextIndex = currentIndex + 1
-      setCurrentIndex(nextIndex)
-
-      // Set new timer
-      const nextCat = questions[nextIndex].category
-      setTimeLeft(nextCat === "Persepsi Bahaya" ? 25 : 20)
-    } else {
-      // Final submit
-      handleSubmit()
-    }
-  }, [currentIndex, questions])
-
-  // 4. Timer countdown — only mutates timeLeft, no side effects
-  useEffect(() => {
-    if (loading || isSubmitting || timeLeft <= 0 || questions.length === 0) return
-
-    const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer)
-          return 0
-        }
-        return prev - 1
-      })
-    }, 1000)
-
-    return () => clearInterval(timer)
-  }, [timeLeft, loading, isSubmitting, questions.length])
-
-  // 4b. When timer hits 0, advance to next question (outside setter to avoid Router update during render)
-  useEffect(() => {
-    if (timeLeft === 0 && !loading && !isSubmitting && questions.length > 0) {
-      handleNext()
-    }
-  }, [timeLeft, loading, isSubmitting, questions.length, handleNext])
+  }, [currentIndex, currentQuestion, isQuizStarted])
 
   // 5. Submit Logic
-  async function handleSubmit() {
+  const handleSubmit = useCallback(async () => {
     setIsSubmitting(true)
 
     // Calculate scores
@@ -197,7 +160,47 @@ export default function QuizPage() {
       sessionStorage.setItem("last_result_id", result.id)
       router.push("/result")
     }
-  }
+  }, [answers, participant, questions, router])
+
+  // 3. Auto Next Logic
+  const handleNext = useCallback(async () => {
+    if (currentIndex < questions.length - 1) {
+      const nextIndex = currentIndex + 1
+      setCurrentIndex(nextIndex)
+
+      // Set new timer
+      setTimeLeft(25)
+    } else {
+      // Final submit
+      handleSubmit()
+    }
+  }, [currentIndex, questions, handleSubmit])
+
+  // 4. Timer countdown — only mutates timeLeft, no side effects
+  useEffect(() => {
+    if (!isQuizStarted || loading || isSubmitting || timeLeft <= 0 || questions.length === 0) return
+
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer)
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
+
+    return () => clearInterval(timer)
+  }, [timeLeft, loading, isSubmitting, questions.length, isQuizStarted])
+
+  // 4b. When timer hits 0, advance to next question (outside setter to avoid Router update during render)
+  useEffect(() => {
+    if (timeLeft === 0 && !loading && !isSubmitting && questions.length > 0) {
+      handleNext()
+    }
+  }, [timeLeft, loading, isSubmitting, questions.length, handleNext])
+
+
 
   if (loading || !participant) {
     return (
@@ -221,6 +224,94 @@ export default function QuizPage() {
     )
   }
 
+  if (!isQuizStarted) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center px-4 py-8">
+        <Card className="relative w-full max-w-md shadow-xl border-none overflow-hidden">
+          <div className="absolute top-0 left-0 h-1.5 w-full bg-[#21479B]" />
+
+          <CardContent className="p-6 sm:p-8">
+            <div className="text-center mb-6">
+              <h1 className="text-xl md:text-2xl font-bold tracking-tight text-[#21479B] dark:text-blue-400 uppercase">
+                Siap Memulai?
+              </h1>
+              <p className="text-sm text-muted-foreground mt-1">
+                Simulasi Ujian Teori SIM {participant.simType}
+              </p>
+            </div>
+
+            {/* Participant Info */}
+            <div className="mb-2 p-4 rounded-lg bg-muted/30 border border-border">
+              <div className="flex items-center gap-2 mb-2">
+                <UserCheck className="h-4 w-4 text-[#21479B] dark:text-blue-400" />
+                <h3 className="text-xs font-bold uppercase tracking-wider text-[#21479B] dark:text-blue-400">
+                  Konfirmasi Peserta
+                </h3>
+              </div>
+              <div className="space-y-1">
+                <p className="text-sm font-bold text-foreground">{participant.name}</p>
+                <p className="text-xs text-muted-foreground">{participant.email}</p>
+              </div>
+            </div>
+
+            <div className="rounded-lg border border-amber-200 bg-amber-50/50 p-4 dark:border-amber-900/40 dark:bg-amber-950/20 mb-6">
+              <div className="flex items-center gap-2 mb-3">
+                <AlertCircle className="h-4 w-4 text-amber-600" />
+                <h3 className="text-xs font-bold uppercase tracking-wider text-amber-800 dark:text-amber-400">
+                  Informasi Penting
+                </h3>
+              </div>
+
+              <ul className="space-y-2 text-[13px] text-amber-900/80 dark:text-amber-200/70">
+                <li className="flex items-center justify-between">
+                  <span>Total Simulasi</span>
+                  <span className="font-bold text-amber-900 dark:text-amber-100">65 Soal</span>
+                </li>
+                <li className="flex items-center justify-between border-t border-amber-200/50 pt-2 dark:border-amber-900/30">
+                  <span>Durasi Per Soal</span>
+                  <span className="font-bold text-amber-900 dark:text-amber-100">25 Detik</span>
+                </li>
+                <li className="flex items-center justify-between border-t border-amber-200/50 pt-2 dark:border-amber-900/30">
+                  <span>Nilai Minimal</span>
+                  <span className="font-bold text-amber-900 dark:text-amber-100">70/100</span>
+                </li>
+                <li className="flex items-center justify-between border-t border-amber-200/50 pt-2 dark:border-amber-900/30">
+                  <span>Volume Audio</span>
+                  <span className="font-bold text-amber-900 dark:text-amber-100">Wajib Aktif</span>
+                </li>
+
+              </ul>
+            </div>
+
+            <div className="space-y-3">
+              <Button
+                className="w-full py-6 text-base font-bold bg-[#21479B] hover:bg-[#1a3778] text-white rounded-xl shadow-lg shadow-blue-900/20 transition-all active:scale-95"
+                onClick={() => {
+                  startAudioContext()
+                  setIsQuizStarted(true)
+                }}
+              >
+                Mulai Ujian Sekarang
+              </Button>
+
+              <Button
+                variant="outline"
+                className="w-full py-6 text-base font-bold rounded-xl border-2 transition-all active:scale-95"
+                onClick={() => router.push("/")}
+              >
+                Batal
+              </Button>
+
+              <p className="text-center text-[10px] leading-relaxed text-muted-foreground italic">
+                *Waktu akan segera berjalan setelah tombol diklik.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
+
   const progress = ((currentIndex + 1) / questions.length) * 100
 
   return (
@@ -233,14 +324,17 @@ export default function QuizPage() {
               <div className="bg-[#21479B] text-white px-3 py-1 rounded font-bold text-sm">
                 SOAL {currentIndex + 1} / {questions.length}
               </div>
-              <div className="hidden md:block text-muted-foreground text-sm">
+              <div className="text-muted-foreground text-sm">
                 {currentQuestion.category}
               </div>
+              <ThemeToggle hideText className="bg-transparent border-none hover:bg-muted" />
             </div>
 
-            <div className={`flex items-center gap-2 font-mono text-xl font-bold ${timeLeft <= 5 ? 'text-red-500 animate-pulse' : 'text-[#21479B] dark:text-blue-400'}`}>
-              <Timer className="h-5 w-5" />
-              {timeLeft}S
+            <div className={`flex items-center gap-3 font-mono text-xl font-bold ${timeLeft <= 5 ? 'text-red-500 animate-pulse' : 'text-[#21479B] dark:text-blue-400'}`}>
+              <div className="flex items-center gap-1.5">
+                <Timer className="h-5 w-5" />
+                {timeLeft}S
+              </div>
             </div>
           </div>
           <Progress value={progress} className="h-2" />
@@ -248,31 +342,10 @@ export default function QuizPage() {
       </header>
 
       {/* Main Quiz Area */}
-      <main className={cn("flex-1 transition-all duration-300 px-4", showBanner ? "mt-26" : "mt-28")}>
+      <main className="flex-1 mt-28 px-4 mb-6">
         <div className="container mx-auto max-w-6xl">
-          {showBanner && (
-            <div className="mb-6 bg-[#21479B]/10 border border-[#21479B]/20 rounded-xl p-4 flex items-center justify-between text-[#21479B] dark:text-blue-300 animate-in fade-in slide-in-from-top-4 duration-500">
-              <div className="flex items-center gap-3">
-                <div className="bg-[#21479B] p-2 rounded-full text-white">
-                  <Volume2 className="h-4 w-4" />
-                </div>
-                <div>
-                  <p className="text-sm font-semibold">Informasi Penting</p>
-                  <p className="text-xs opacity-90">Simulasi ini berisi audio & video interaktif. Mohon aktifkan volume speaker Anda.</p>
-                </div>
-              </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setShowBanner(false)}
-                className="hover:bg-[#21479B]/20 h-8 w-8 text-[#21479B] dark:text-blue-300"
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </div>
-          )}
           <Card className="shadow-xl border-none overflow-hidden">
-            <div className="flex flex-col md:flex-row gap-7">
+            <div className="flex flex-col md:flex-row gap-0 md:gap-7">
               {/* Left Side - Media */}
               {currentQuestion.media_url && (
                 <div className="w-full md:w-1/2 bg-transparent aspect-video md:aspect-auto flex items-center justify-center">
@@ -283,6 +356,8 @@ export default function QuizPage() {
                       controls
                       autoPlay
                       muted
+                      playsInline
+                      webkit-playsinline="true"
                     />
                   ) : (
                     <img
@@ -297,46 +372,97 @@ export default function QuizPage() {
               {/* Right Side - Question, Options & Button */}
               <div className={`flex flex-col ${currentQuestion.media_url ? 'w-full md:w-1/2' : 'w-full'}`}>
                 <CardContent className="p-5 md:p-5 space-y-8 flex-1">
-                  <h2 className="text-xl md:text-2xl font-semibold leading-relaxed">
+                  <h2 className="text-lg md:text-lg font-semibold mb-3">
                     {currentQuestion.text}
                   </h2>
 
-                  <RadioGroup
-                    value={answers[currentIndex] || ""}
-                    onValueChange={(val) => setAnswers(prev => ({ ...prev, [currentIndex]: val }))}
-                    className="grid gap-3"
-                  >
-                    {currentQuestion.options.map((opt, i) => (
-                      <Label
-                        key={i}
-                        className={`flex items-center gap-4 p-2 rounded-xl border-2 transition-all cursor-pointer
-                          hover:bg-muted/50
-                          ${answers[currentIndex] === opt
-                            ? 'border-[#21479B] bg-blue-50/50 dark:bg-blue-900/20 dark:border-blue-400'
-                            : 'border-border'}`}
-                      >
-                        <RadioGroupItem value={opt} id={`opt-${i}`} />
-                        <span className="text-lg font-medium">{opt}</span>
-                      </Label>
-                    ))}
-                  </RadioGroup>
+                  <div className="grid gap-3">
+
+                    {currentQuestion.options.map((opt, i) => {
+                      const letter = String.fromCharCode(65 + i)
+                      const isSelected = answers[currentIndex] === opt
+                      const isCorrect = opt === currentQuestion.correct_answer
+                      const hasAnswered = !!answers[currentIndex]
+
+                      let stateClasses = "border-border"
+                      let badgeClasses = "bg-muted text-muted-foreground"
+
+                      if (hasAnswered) {
+                        if (isCorrect) {
+                          stateClasses = "border-green-500 bg-green-50/50 dark:bg-green-900/20 dark:border-green-400"
+                          badgeClasses = "bg-green-500 text-white"
+                        } else if (isSelected) {
+                          stateClasses = "border-red-500 bg-red-50/50 dark:bg-red-900/20 dark:border-red-400"
+                          badgeClasses = "bg-red-500 text-white"
+                        } else {
+                          stateClasses = "border-border opacity-50"
+                        }
+                      } else if (isSelected) {
+                        stateClasses = "border-[#21479B] bg-blue-50/50 dark:bg-blue-900/20 dark:border-blue-400"
+                        badgeClasses = "bg-[#21479B] text-white"
+                      }
+
+                      return (
+                        <button
+                          key={i}
+                          type="button"
+                          disabled={hasAnswered || isSubmitting}
+                          onClick={() => setAnswers(prev => ({ ...prev, [currentIndex]: opt }))}
+                          className={`flex items-center justify-start p-3 rounded-xl border-2 transition-all w-full text-left
+                            ${!hasAnswered ? 'cursor-pointer hover:bg-muted/50 active:scale-[0.99]' : 'cursor-default'}
+                            ${stateClasses}`}
+                        >
+                          <div className="flex items-center gap-4 flex-1">
+                            <span className={`flex-shrink-0 flex items-center justify-center h-8 w-8 rounded-lg font-bold text-sm transition-colors ${badgeClasses}`}>
+                              {letter}
+                            </span>
+                            <span className={`text-base font-medium transition-colors 
+                              ${hasAnswered && isCorrect ? 'text-green-700 dark:text-green-300' : 'text-foreground'}
+                              ${hasAnswered && isSelected && !isCorrect ? 'text-red-700 dark:text-red-300' : ''}
+                              ${!hasAnswered && isSelected ? 'text-[#21479B] dark:text-blue-300' : ''}`}>
+                              {opt}
+                            </span>
+                          </div>
+
+                          {hasAnswered && isCorrect && (
+                            <CheckCircle2 className="h-5 w-5 text-green-500 ml-auto animate-in zoom-in duration-300" />
+                          )}
+                          {hasAnswered && isSelected && !isCorrect && (
+                            <XCircle className="h-5 w-5 text-red-500 ml-auto animate-in zoom-in duration-300" />
+                          )}
+                        </button>
+                      )
+                    })}
+                  </div>
                 </CardContent>
 
-                {/* Action Button */}
+                {/* Action Button & Placeholder Alert */}
                 <div className="flex justify-end p-3 md:p-6 pt-0">
-                  <Button
-                    onClick={handleNext}
-                    disabled={isSubmitting}
-                    className="bg-[#21479B] hover:bg-[#1a3778] text-white px-8 py-6 rounded-xl text-lg w-full md:w-auto"
-                  >
-                    {isSubmitting ? 'Menyimpan...' : (currentIndex === questions.length - 1 ? 'Selesai' : 'Lanjut →')}
-                  </Button>
+                  {answers[currentIndex] ? (
+                    <div className="w-full md:w-auto animate-in fade-in slide-in-from-bottom-2 duration-300">
+                      <Button
+                        onClick={handleNext}
+                        disabled={isSubmitting}
+                        className="bg-[#21479B] hover:bg-[#1a3778] text-white px-8 py-6 rounded-xl text-lg w-full md:w-auto shadow-lg shadow-blue-900/10 transition-all active:scale-95"
+                      >
+                        {isSubmitting ? 'Menyimpan...' : (currentIndex === questions.length - 1 ? 'Selesaikan Tes' : 'Soal Selanjutnya →')}
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-3 px-6 py-4 rounded-xl bg-muted/50 border border-muted text-muted-foreground w-full md:w-auto animate-in fade-in slide-in-from-bottom-2 duration-300">
+                      <AlertCircle className="h-5 w-5 text-muted-foreground" />
+                      <span className="text-sm md:text-base font-medium">Silakan pilih jawaban untuk melanjutkan</span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
           </Card>
         </div>
       </main>
+
+      {/* Hidden audio element for persistent context */}
+      <audio ref={audioRef} className="hidden" preload="auto" />
     </div>
   )
 }

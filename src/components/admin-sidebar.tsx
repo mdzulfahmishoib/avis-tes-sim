@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { Users, FileQuestion, BarChart3, LogOut, ShieldCheck, House } from "lucide-react"
+import { Users, FileQuestion, BarChart3, LogOut, ShieldCheck, House, MessageSquarePlus } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggle"
@@ -45,6 +45,13 @@ export function AdminSidebar() {
           >
             <Users className="h-4 w-4" />
             Admin Users
+          </Link>
+          <Link
+            href="/admin/feedbacks"
+            className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary dark:text-white"
+          >
+            <MessageSquarePlus className="h-4 w-4" />
+            Kritik & Saran
           </Link>
         </nav>
       </div>
