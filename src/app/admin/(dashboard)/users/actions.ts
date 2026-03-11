@@ -4,13 +4,12 @@ import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 
-// Notice we need the service role key to manage users in Supabase Auth
-const supabaseAdmin = createSupabaseClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
-
 export async function createAdminUser(formData: FormData) {
+  const supabaseAdmin = createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+
   const email = formData.get('email') as string
   const password = formData.get('password') as string
 
@@ -50,6 +49,10 @@ export async function createAdminUser(formData: FormData) {
 
 export async function deleteAdminUser(userId: string) {
   const supabase = await createClient()
+  const supabaseAdmin = createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
   
   // Verify current user is admin
   const { data: { user } } = await supabase.auth.getUser()
@@ -62,6 +65,11 @@ export async function deleteAdminUser(userId: string) {
 }
 
 export async function resetAdminPassword(formData: FormData) {
+  const supabaseAdmin = createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+
   const userId = formData.get('userId') as string
   const password = formData.get('password') as string
 
