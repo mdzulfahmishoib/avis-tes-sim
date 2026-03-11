@@ -169,7 +169,7 @@ export default function QuizPage() {
       setCurrentIndex(nextIndex)
 
       // Set new timer
-      setTimeLeft(25)
+      setTimeLeft(30)
     } else {
       // Final submit
       handleSubmit()
@@ -232,7 +232,7 @@ export default function QuizPage() {
 
           <CardContent className="p-6 sm:p-8">
             <div className="text-center mb-6">
-              <h1 className="text-xl md:text-2xl font-bold tracking-tight text-[#21479B] dark:text-blue-400 uppercase">
+              <h1 className="text-xl md:text-2xl font-bold tracking-tight text-[#21479B] dark:text-blue-500 uppercase">
                 Siap Memulai?
               </h1>
               <p className="text-sm text-muted-foreground mt-1">
@@ -243,8 +243,8 @@ export default function QuizPage() {
             {/* Participant Info */}
             <div className="mb-2 p-4 rounded-lg bg-muted/30 border border-border">
               <div className="flex items-center gap-2 mb-2">
-                <UserCheck className="h-4 w-4 text-[#21479B] dark:text-blue-400" />
-                <h3 className="text-xs font-bold uppercase tracking-wider text-[#21479B] dark:text-blue-400">
+                <UserCheck className="h-4 w-4 text-[#21479B] dark:text-blue-500" />
+                <h3 className="text-xs font-bold uppercase tracking-wider text-[#21479B] dark:text-blue-500">
                   Konfirmasi Peserta
                 </h3>
               </div>
@@ -330,7 +330,7 @@ export default function QuizPage() {
               <ThemeToggle hideText className="bg-transparent border-none hover:bg-muted" />
             </div>
 
-            <div className={`flex items-center gap-3 font-mono text-xl font-bold ${timeLeft <= 5 ? 'text-red-500 animate-pulse' : 'text-[#21479B] dark:text-blue-400'}`}>
+            <div className={`flex items-center gap-3 font-mono text-xl font-bold ${timeLeft <= 5 ? 'text-red-500 animate-pulse' : 'text-[#21479B] dark:text-blue-500'}`}>
               <div className="flex items-center gap-1.5">
                 <Timer className="h-5 w-5" />
                 {timeLeft}S
@@ -355,7 +355,6 @@ export default function QuizPage() {
                       className="w-full h-full object-contain"
                       controls
                       autoPlay
-                      muted
                       playsInline
                       webkit-playsinline="true"
                     />

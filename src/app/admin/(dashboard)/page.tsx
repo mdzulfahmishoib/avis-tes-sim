@@ -133,7 +133,7 @@ export default async function AdminDashboardPage() {
                   <Car className="h-4 w-4 text-blue-500" />
                   <span>SIM A</span>
                 </div>
-                <span className="font-bold text-blue-600 dark:text-blue-400">{simACount || 0}</span>
+                <span className="font-bold text-blue-600 dark:text-blue-500">{simACount || 0}</span>
               </div>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-sm">

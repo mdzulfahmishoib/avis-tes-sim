@@ -39,17 +39,28 @@ CREATE TABLE test_results (
     created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- 5. Create Feedbacks table
+CREATE TABLE feedbacks (
+    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    participant_name TEXT NOT NULL,
+    participant_email TEXT NOT NULL,
+    type TEXT DEFAULT 'General',
+    content TEXT NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- 5. Setup RLS (Row Level Security)
 
 -- Enable RLS
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE questions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE test_results ENABLE ROW LEVEL SECURITY;
+ALTER TABLE feedbacks ENABLE ROW LEVEL SECURITY;
 
--- Profiles: Only admins can view profiles
-CREATE POLICY "Admins can view profiles" ON profiles
+-- Profiles: Users can view their own profile (avoid recursion)
+CREATE POLICY "Users can view own profile" ON profiles
     FOR SELECT TO authenticated
-    USING (EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin'));
+    USING (auth.uid() = id);
 
 -- Questions: Admins can do everything, public can only read
 CREATE POLICY "Admins can manage questions" ON questions
@@ -73,6 +84,15 @@ CREATE POLICY "Public can insert test results" ON test_results
 CREATE POLICY "Public can view their own test results" ON test_results
     FOR SELECT TO public
     USING (true);
+
+-- Feedbacks: Admins can do everything, public can only insert
+CREATE POLICY "Admins can manage feedbacks" ON feedbacks
+    FOR ALL TO authenticated
+    USING (EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'admin'));
+
+CREATE POLICY "Public can insert feedbacks" ON feedbacks
+    FOR INSERT TO public
+    WITH CHECK (true);
 
 -- 6. Setup Storage
 -- Note: You may need to create the bucket 'question-media' manually in the Supabase Dashboard

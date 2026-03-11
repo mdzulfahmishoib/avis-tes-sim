@@ -15,7 +15,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Car, Bike } from "lucide-react"
+import { Car, Bike, ClipboardCheck } from "lucide-react"
 
 export function StartQuizModal() {
   const [open, setOpen] = useState(false)
@@ -43,8 +43,11 @@ export function StartQuizModal() {
         render={
           <Button
             size="lg"
-            className="bg-[#21479B] hover:bg-[#1a3778] text-white text-lg px-8 py-6 rounded-full shadow-lg"
-          />
+            className="bg-[#21479B] hover:bg-[#1a3778] text-white text-lg px-8 py-6 rounded-full shadow-lg flex items-center gap-2 group"
+          >
+            <ClipboardCheck className="h-6 w-6" />
+            Mulai Simulasi Tes
+          </Button>
         }
       >
         Mulai Simulasi Tes
@@ -87,7 +90,7 @@ export function StartQuizModal() {
                   type="button"
                   onClick={() => setSimType("A")}
                   className={`flex items-center justify-center gap-2 p-4 rounded-xl border-2 transition-all ${simType === "A"
-                    ? "border-[#21479B] bg-blue-50 dark:bg-blue-900/20 text-[#21479B] dark:text-blue-400 font-bold shadow-sm"
+                    ? "border-[#21479B] bg-blue-50 dark:bg-blue-900/20 text-[#21479B] dark:text-blue-500 font-bold shadow-sm"
                     : "border-muted bg-white dark:bg-transparent text-muted-foreground hover:border-muted-foreground"
                     }`}
                 >
