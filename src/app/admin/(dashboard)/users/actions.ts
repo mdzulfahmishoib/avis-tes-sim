@@ -54,17 +54,11 @@ export async function deleteAdminUser(userId: string) {
   // Verify current user is admin
   const { data: { user } } = await supabase.auth.getUser()
   if (!user || user.id === userId) {
-     return { error: "Cannot delete yourself or unauthenticated" }
+     return
   }
 
-  const { error } = await supabaseAdmin.auth.admin.deleteUser(userId)
-  
-  if (error) {
-    return { error: error.message }
-  }
-
+  await supabaseAdmin.auth.admin.deleteUser(userId)
   revalidatePath('/admin/users')
-  return { success: true }
 }
 
 export async function resetAdminPassword(formData: FormData) {

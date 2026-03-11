@@ -44,9 +44,8 @@ const FAQSection = () => {
           </p>
         </div>
 
-        {/* Accordion List */}
         <div className="bg-slate-50/50 dark:bg-white/5 px-8 py-4 md:px-8 md:py-4  rounded-3xl border border-gray-100 dark:border-white/10">
-          <Accordion type="single" collapsible className="w-full space-y-2">
+          <Accordion className="w-full space-y-2">
             {faqs.map((faq, index) => (
               <AccordionItem 
                 key={index} 
