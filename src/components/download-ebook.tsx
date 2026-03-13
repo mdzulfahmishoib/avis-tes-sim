@@ -10,10 +10,10 @@ const DownloadEbook = () => {
       deskripsi: "Materi khusus kendaraan roda dua dan tata tertib jalur motor.",
       icon: <Bike className="w-6 h-6 text-emerald-500" />,
       items: [
-        { nama: "Modul 1", link: "https://txdgzmrkpptjzidfvyyj.supabase.co/storage/v1/object/public/ebook-avis/Sim-C-Modul-1.pdf" },
-        { nama: "Modul 2", link: "https://txdgzmrkpptjzidfvyyj.supabase.co/storage/v1/object/public/ebook-avis/Sim-C-Modul-2.pdf" },
-        { nama: "Modul 3", link: "https://txdgzmrkpptjzidfvyyj.supabase.co/storage/v1/object/public/ebook-avis/Sim-C-Modul-3.pdf" },
-        { nama: "Modul 4", link: "https://txdgzmrkpptjzidfvyyj.supabase.co/storage/v1/object/public/ebook-avis/Sim-C-Modul-4.pdf" }
+        { nama: "SIM C Modul 1", link: "/ebook/Sim-C-Modul-1.pdf" },
+        { nama: "SIM C Modul 2", link: "/ebook/Sim-C-Modul-2.pdf" },
+        { nama: "SIM C Modul 3", link: "/ebook/Sim-C-Modul-3.pdf" },
+        { nama: "SIM C Modul 4", link: "/ebook/Sim-C-Modul-4.pdf" }
       ]
     },
     {
@@ -21,10 +21,10 @@ const DownloadEbook = () => {
       deskripsi: "Panduan lengkap pengoperasian mobil dan etika berkendara roda empat.",
       icon: <Car className="w-6 h-6 text-emerald-500" />,
       items: [
-        { nama: "Modul 1", link: "https://txdgzmrkpptjzidfvyyj.supabase.co/storage/v1/object/public/ebook-avis/Sim-A-Modul-1.pdf" },
-        { nama: "Modul 2", link: "https://txdgzmrkpptjzidfvyyj.supabase.co/storage/v1/object/public/ebook-avis/Sim-A-Modul-2.pdf" },
-        { nama: "Modul 3", link: "https://txdgzmrkpptjzidfvyyj.supabase.co/storage/v1/object/public/ebook-avis/Sim-A-Modul-3.pdf" },
-        { nama: "Modul 4", link: "https://txdgzmrkpptjzidfvyyj.supabase.co/storage/v1/object/public/ebook-avis/Sim-A-Modul-4.pdf" }
+        { nama: "SIM A Modul 1", link: "/ebook/Sim-A-Modul-1.pdf" },
+        { nama: "SIM A Modul 2", link: "/ebook/Sim-A-Modul-2.pdf" },
+        { nama: "SIM A Modul 3", link: "/ebook/Sim-A-Modul-3.pdf" },
+        { nama: "SIM A Modul 4", link: "/ebook/Sim-A-Modul-4.pdf" }
       ]
     }
   ];

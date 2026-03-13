@@ -162,12 +162,24 @@ export function EditQuestionModal({ question }: { question: Question }) {
             />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="media">Media File (Change if needed - Image/MP4)</Label>
-            {question.media_url && (
-              <div className="text-xs mb-2 text-muted-foreground">Current media exists. Providing a new one will replace it.</div>
-            )}
-            <Input id="media" name="media" type="file" accept="image/*,video/mp4" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="media">Media File (Optional - Image/MP4)</Label>
+              {question.media_url && !question.media_url.includes('youtube') && !question.media_url.includes('youtu.be') ? (
+                <div className="text-xs mb-2 text-muted-foreground">Current media exists. Providing a new one will replace it.</div>
+              ) : null}
+              <Input id="media" name="media" type="file" accept="image/*,video/mp4" />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="youtube_url">YouTube URL (Alternative to Video File)</Label>
+              <Input 
+                id="youtube_url" 
+                name="youtube_url" 
+                defaultValue={question.media_url && (question.media_url.includes('youtube') || question.media_url.includes('youtu.be')) ? question.media_url : ""} 
+                placeholder="https://youtube.com/watch?v=..." 
+              />
+            </div>
           </div>
 
           {isPersepsi && (

@@ -22,6 +22,7 @@ export async function createQuestion(formData: FormData) {
   const correctAnswer = formData.get('correct_answer') as string
   const mediaFile = formData.get('media') as File | null
   const audioFile = formData.get('audio') as File | null
+  const youtubeUrl = formData.get('youtube_url') as string | null
 
   // Options
   let options: string[] = []
@@ -42,9 +43,13 @@ export async function createQuestion(formData: FormData) {
   let mediaUrl = null
   let mediaType = null
   let audioUrl = null
-
-  // Handle media file upload
-  if (mediaFile && mediaFile.size > 0) {
+ 
+  // Handle YouTube URL (Priority over file upload for mitigating egress)
+  if (youtubeUrl && youtubeUrl.trim().length > 0) {
+    mediaUrl = youtubeUrl
+    mediaType = 'video'
+  } else if (mediaFile && mediaFile.size > 0) {
+    // Handle media file upload
     const fileExt = mediaFile.name.split('.').pop()
     const fileName = `${uuidv4()}.${fileExt}`
     if (mediaFile.type.startsWith('image/')) mediaType = 'image'
@@ -103,6 +108,7 @@ export async function updateQuestion(id: string, formData: FormData) {
   const correctAnswer = formData.get('correct_answer') as string
   const mediaFile = formData.get('media') as File | null
   const audioFile = formData.get('audio') as File | null
+  const youtubeUrl = formData.get('youtube_url') as string | null
 
   // Options
   let options: string[] = []
@@ -129,8 +135,12 @@ export async function updateQuestion(id: string, formData: FormData) {
     options,
   }
 
-  // Handle media file upload
-  if (mediaFile && mediaFile.size > 0) {
+  // Handle YouTube URL
+  if (youtubeUrl && youtubeUrl.trim().length > 0) {
+    updateData.media_url = youtubeUrl
+    updateData.media_type = 'video'
+  } else if (mediaFile && mediaFile.size > 0) {
+    // Handle media file upload
     const fileExt = mediaFile.name.split('.').pop()
     const fileName = `${uuidv4()}.${fileExt}`
     let mediaType = null
@@ -179,8 +189,8 @@ export async function deleteQuestion(id: string) {
 
   const { data: question } = await supabase.from('questions').select('media_url').eq('id', id).single()
 
-  // Delete media if exists
-  if (question?.media_url) {
+  // Delete media if exists in Supabase Storage
+  if (question?.media_url && question.media_url.includes('supabase.co')) {
     // extract filename from url
     const urlParts = question.media_url.split('/')
     const fileName = urlParts[urlParts.length - 1]

@@ -33,6 +33,7 @@ export function StartQuizModal() {
 
     // Store in sessionStorage to survive reloads easily
     sessionStorage.setItem('quiz_participant', JSON.stringify({ name, email, simType, module }))
+    sessionStorage.removeItem('quiz_questions')
 
     router.push('/quiz')
   }

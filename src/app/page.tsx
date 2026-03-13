@@ -1,3 +1,4 @@
+import NextImage from "next/image"
 import { Award, Timer, BookOpen, Users, GraduationCap, ChartBar } from "lucide-react"
 import { StartQuizModal } from "@/components/start-quiz-modal"
 import { createClient } from "@/lib/supabase/server"
@@ -8,6 +9,8 @@ import DownloadEbook from "@/components/download-ebook"
 import FAQSection from "@/components/faq"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
+
+export const revalidate = 3600; // Cache the page for 1 hour
 
 export default async function Home() {
   const supabase = await createClient()
@@ -109,10 +112,13 @@ export default async function Home() {
               {/* Right Column: Visual */}
               <div className="relative hidden lg:flex justify-end items-center animate-in slide-in-from-right duration-1000 delay-200">
                 <div className="relative z-10 w-full max-w-lg translate-x-12 xl:translate-x-14">
-                  <img
-                    src="https://txdgzmrkpptjzidfvyyj.supabase.co/storage/v1/object/public/ebook-avis/hero-avatar.webp"
+                  <NextImage
+                    src="/img/hero-avatar.webp" // Path otomatis merujuk ke folder public
                     alt="Simtera Hero Avatar"
+                    width={512}
+                    height={512}
                     className="w-full h-auto object-contain"
+                    priority
                   />
 
                   {/* Floating Elements (Visual Polish) - Pindahkan ke dalam div yang sama agar ikut bergeser */}

@@ -1,5 +1,6 @@
 "use client"
 
+import NextImage from "next/image"
 import { useState, useEffect, useCallback, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { Progress } from "@/components/ui/progress"
@@ -24,6 +25,12 @@ type Question = {
   correct_answer: string
   module: string
 }
+
+const getYouTubeID = (url: string) => {
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+  const match = url.match(regExp);
+  return (match && match[2].length === 11) ? match[2] : null;
+};
 
 export default function QuizPage() {
   const router = useRouter()
@@ -51,6 +58,15 @@ export default function QuizPage() {
   useEffect(() => {
     if (!participant) return
 
+    // Check for cached questions first to save egress
+    const cachedQuestions = sessionStorage.getItem("quiz_questions")
+    if (cachedQuestions) {
+      setQuestions(JSON.parse(cachedQuestions))
+      setLoading(false)
+      setTimeLeft(25)
+      return
+    }
+
     async function fetchQuestions() {
       const supabase = createClient()
       const simType = participant.simType // 'A' or 'C'
@@ -66,10 +82,10 @@ export default function QuizPage() {
         return newArray
       }
 
-      // Fetch all candidate questions for the sim type to avoid multiple Supabase calls
+      // Fetch only necessary columns to reduce egress
       const { data: allQuestions, error } = await supabase
         .from("questions")
-        .select("*")
+        .select("id, category, text, media_url, media_type, audio_url, options, correct_answer, module")
         .eq("sim_type", simType)
 
       if (error || !allQuestions || allQuestions.length === 0) {
@@ -122,6 +138,8 @@ export default function QuizPage() {
 
       const all = [...qPersepsi, ...qWawasan, ...qPengetahuan]
       setQuestions(all)
+      // Save to cache to reduce egress on refresh
+      sessionStorage.setItem("quiz_questions", JSON.stringify(all))
       setLoading(false)
 
       if (all.length > 0) {
@@ -378,20 +396,31 @@ export default function QuizPage() {
               <div className="lg:col-span-6 flex flex-col gap-4 animate-in fade-in slide-in-from-left duration-700 max-w-2xl mx-auto lg:mx-0 w-full">
                 <div className="relative aspect-video w-full bg-slate-950 rounded-2xl overflow-hidden shadow-md border-4 border-background ring-1 ring-border/50">
                   {currentQuestion.media_type === "video" ? (
-                    <video
-                      key={currentQuestion.media_url}
-                      src={currentQuestion.media_url}
-                      className="w-full h-full object-cover"
-                      controls
-                      autoPlay
-                      playsInline
-                      webkit-playsinline="true"
-                    />
+                    currentQuestion.media_url?.includes('youtube.com') || currentQuestion.media_url?.includes('youtu.be') ? (
+                      <iframe
+                        src={`https://www.youtube.com/embed/${getYouTubeID(currentQuestion.media_url || "")}?autoplay=1&rel=0&mute=1`}
+                        className="w-full h-full"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
+                    ) : (
+                      <video
+                        key={currentQuestion.media_url}
+                        src={currentQuestion.media_url}
+                        className="w-full h-full object-cover"
+                        controls
+                        autoPlay
+                        playsInline
+                        webkit-playsinline="true"
+                      />
+                    )
                   ) : (
-                    <img
-                      src={currentQuestion.media_url}
+                    <NextImage
+                      src={currentQuestion.media_url || ""}
                       className="w-full h-full object-cover"
                       alt="Question Media"
+                      width={800}
+                      height={450}
                     />
                   )}
                 </div>

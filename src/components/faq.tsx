@@ -14,11 +14,11 @@ const FAQSection = () => {
     },
     {
       question: "Apa perbedaan Modul 1, 2, 3, dan 4?",
-      answer: "Setiap modul menyajikan materi ujian yang berbeda dan saling melengkapi untuk memastikan kesiapan Anda secara menyeluruh. Mulai dari pemahaman Persepsi Bahaya, Wawasan Kebangsaan, hingga Pengetahuan Peraturan Lalu Lintas yang semuanya akan diuji dalam satu kesatuan sistem ujian teori SIM."
+      answer: "Setiap modul menyajikan materi ujian yang berbeda dan saling melengkapi untuk memastikan kesiapan Anda secara menyeluruh. Mulai dari pemahaman Persepsi Bahaya, Wawasan, hingga Pengetahuan Peraturan Lalu Lintas yang semuanya akan diuji dalam satu kesatuan sistem ujian teori SIM."
     },
     {
       question: "Modul mana yang harus saya pelajari?",
-      answer: "Anda sangat disarankan untuk mempelajari **semua modul (1 hingga 4)**. Setiap modul menyajikan materi ujian yang berbeda dan saling melengkapi, mulai dari etika, persepsi bahaya, hingga aturan teknis, guna memastikan kesiapan Anda secara menyeluruh sebelum menghadapi ujian asli."
+      answer: "Anda sangat disarankan untuk mempelajari semua modul (1 hingga 4). Setiap modul menyajikan materi ujian yang berbeda dan saling melengkapi, mulai dari etika, persepsi bahaya, hingga aturan teknis, guna memastikan kesiapan Anda secara menyeluruh sebelum menghadapi ujian asli."
     },
     {
       question: "Bagaimana cara mendapatkan skor kelulusan?",
@@ -26,7 +26,7 @@ const FAQSection = () => {
     },
     {
       question: "Dapatkah saya melakukan simulasi berkali-kali?",
-      answer: "Tentu saja! Anda bisa melakukan simulasi tanpa batas untuk mengasah kesiapan Anda sebelum menghadapi ujian teori yang sesungguhnya di Satpas."
+      answer: "Tentu saja! Anda bisa melakukan simulasi tanpa batas untuk mengasah kesiapan Anda sebelum menghadapi ujian teori yang sesungguhnya di SATPAS."
     },
   ];
 

@@ -1,5 +1,6 @@
 "use client"
 
+import NextImage from "next/image"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { format } from "date-fns"
@@ -309,7 +310,9 @@ export default function ResultPage() {
 
                   <div className="relative">
                     <div className="bg-white w-32 h-32 rounded-lg flex items-center justify-center overflow-hidden group-hover/qr:border-[#21479B]/30 transition-colors">
-                      <img
+                      <NextImage
+                        width={256}
+                        height={256}
                         src="https://quickchart.io/qr?text=https%3A%2F%2Ftako.id%2Ffahmi.shoib&size=256&centerImageUrl=https%3A%2F%2Fassets.tako.id%2Fbadges%2Fqr.png"
                         alt="Donation QR Code"
                         className="w-full h-full object-contain group-hover/qr:scale-105 transition-transform duration-500"
