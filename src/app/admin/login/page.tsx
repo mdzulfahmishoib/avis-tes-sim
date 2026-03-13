@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Eye, EyeOff, Loader2 } from "lucide-react"
 import { toast } from "sonner"
+import Header from "@/components/header"
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
@@ -19,10 +20,15 @@ export default function LoginPage() {
       const res = await login(formData)
       if (res?.error) {
         toast.error(res.error)
+        setIsLoading(false)
       }
-    } catch (error) {
+    } catch (error: any) {
+      // Next.js redirect() throws an error to handle the redirection.
+      // We MUST re-throw it so Next.js can catch it and perform the redirect.
+      if (error?.message === 'NEXT_REDIRECT' || error?.digest?.startsWith('NEXT_REDIRECT')) {
+        throw error
+      }
       toast.error("Terjadi kesalahan saat login")
-    } finally {
       setIsLoading(false)
     }
   }
@@ -32,6 +38,7 @@ export default function LoginPage() {
       {/* Main Content */}
       <main className="flex-1">
         <div className="flex min-h-[100dvh] items-center justify-center p-4">
+          <Header />
           <Card className="mx-auto max-w-sm w-full">
             <CardHeader>
               <CardTitle className="text-2xl font-bold text-primary dark:text-white">Admin Login</CardTitle>
@@ -50,6 +57,7 @@ export default function LoginPage() {
                     id="email"
                     name="email"
                     type="email"
+                    autoComplete="email"
                     placeholder="contoh@email.com"
                     autoFocus={true}
                     required
@@ -63,6 +71,7 @@ export default function LoginPage() {
                       id="password"
                       name="password"
                       type={showPassword ? "text" : "password"}
+                      autoComplete="current-password"
                       placeholder="Masukkan Password"
                       required
                       className="pr-10"
@@ -89,7 +98,7 @@ export default function LoginPage() {
                 </div>
                 <Button
                   type="submit"
-                  className="w-full bg-[#21479B] hover:bg-[#1a3778] text-white"
+                  className="w-full h-9 bg-[#21479B] hover:bg-[#1a3778] text-white"
                   disabled={isLoading}
                 >
                   {isLoading ? (

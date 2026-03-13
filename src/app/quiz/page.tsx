@@ -6,7 +6,7 @@ import { Progress } from "@/components/ui/progress"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Timer, AlertCircle, UserCheck, CheckCircle2, XCircle } from "lucide-react"
+import { Timer, AlertCircle, UserCheck, CheckCircle2, XCircle, House, Loader2 } from "lucide-react"
 import { createClient } from "@/lib/supabase/client"
 import { submitQuizResult } from "./actions"
 import { toast } from "sonner"
@@ -253,7 +253,7 @@ export default function QuizPage() {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center px-4 py-8">
         <Header />
-        <Card className="mt-18 relative w-full max-w-md shadow-xl border-none overflow-hidden">
+        <Card className="mt-18 relative w-full max-w-md shadow-sm border-none overflow-hidden">
           <div className="absolute top-0 left-0 h-1.5 w-full bg-[#21479B]" />
 
           <CardContent className="p-6 sm:p-8">
@@ -315,7 +315,7 @@ export default function QuizPage() {
 
             <div className="space-y-2">
               <Button
-                className="w-full py-6 text-base font-bold bg-[#21479B] hover:bg-[#1a3778] text-white rounded-xl shadow-lg shadow-blue-900/20 transition-all active:scale-95"
+                className="w-full py-6 text-base font-bold bg-[#21479B] hover:bg-[#1a3778] text-white rounded-xl shadow-sm transition-all active:scale-95"
                 onClick={() => {
                   startAudioContext()
                   setIsQuizStarted(true)
@@ -354,9 +354,6 @@ export default function QuizPage() {
               <div className="bg-[#21479B] text-white px-3 py-1 rounded font-bold text-sm">
                 SOAL {currentIndex + 1} / {questions.length}
               </div>
-              <div className="text-muted-foreground text-sm">
-                {currentQuestion.category}
-              </div>
               <ThemeToggle hideText className="bg-transparent border-none hover:bg-muted" />
             </div>
 
@@ -372,17 +369,19 @@ export default function QuizPage() {
       </header>
 
       {/* Main Quiz Area */}
-      <main className="flex-1 mt-28 px-4 mb-6">
-        <div className="container mx-auto max-w-6xl">
-          <Card className="shadow-sm border-none overflow-hidden">
-            <div className="flex flex-col md:flex-row gap-0 md:gap-7">
-              {/* Left Side - Media */}
-              {currentQuestion.media_url && (
-                <div className="w-full md:w-1/2 bg-transparent aspect-video md:aspect-auto flex items-center justify-center">
+      <main className="flex-1 mt-25 px-4 mb-10">
+        <div className="container mx-auto max-w-7xl">
+          <div className={`grid gap-4 ${currentQuestion.media_url ? 'lg:grid-cols-12 items-start' : 'max-w-3xl mx-auto'}`}>
+
+            {/* Left Side: Media Container */}
+            {currentQuestion.media_url && (
+              <div className="lg:col-span-6 flex flex-col gap-4 animate-in fade-in slide-in-from-left duration-700 max-w-2xl mx-auto lg:mx-0 w-full">
+                <div className="relative aspect-video w-full bg-slate-950 rounded-2xl overflow-hidden shadow-md border-4 border-background ring-1 ring-border/50">
                   {currentQuestion.media_type === "video" ? (
                     <video
+                      key={currentQuestion.media_url}
                       src={currentQuestion.media_url}
-                      className="w-full h-full object-contain"
+                      className="w-full h-full object-cover"
                       controls
                       autoPlay
                       playsInline
@@ -391,44 +390,61 @@ export default function QuizPage() {
                   ) : (
                     <img
                       src={currentQuestion.media_url}
-                      className="w-full h-full object-contain"
+                      className="w-full h-full object-cover"
                       alt="Question Media"
                     />
                   )}
                 </div>
-              )}
 
-              {/* Right Side - Question, Options & Button */}
-              <div className={`flex flex-col ${currentQuestion.media_url ? 'w-full md:w-1/2' : 'w-full'}`}>
-                <CardContent className="p-5 md:p-5 space-y-8 flex-1">
-                  <h2 className="text-lg md:text-lg font-semibold mb-3">
-                    {currentQuestion.text}
-                  </h2>
+                {/* Optional description or hint area below media */}
+                <div className="hidden lg:flex items-center gap-2 text-muted-foreground text-[10px] px-2">
+                  <AlertCircle className="h-3 w-3" />
+                  <span>Mohon naikkan volume speaker untuk mendengarkan soal audio/video</span>
+                </div>
+              </div>
+            )}
 
-                  <div className="grid gap-3">
+            {/* Right Side: Question & Options Card */}
+            <div className={`${currentQuestion.media_url ? 'lg:col-span-6' : 'w-full'} flex flex-col gap-6 animate-in fade-in slide-in-from-right duration-700`}>
+              <Card className="flex-1 border-none shadow-md rounded-2xl overflow-hidden flex flex-col">
+                <CardContent className="md:p-6 flex flex-col h-full space-y-6">
+                  {/* Question Text */}
+                  <div className="space-y-3 mb-3">
+                    <div className="flex items-center gap-2 text-[#21479B] dark:text-blue-400 font-bold text-[12px] uppercase tracking-widest">
+                      {/* Category Badge Overlay */}
+                      <div className="bg-[#21479B] text-white px-3 py-1 rounded-md text-[10px] font-bold tracking-wider uppercase">
+                        {currentQuestion.category}
+                      </div>
+                    </div>
+                    <h2 className="text-lg md:text-xl font-bold leading-tight text-foreground">
+                      {currentQuestion.text}
+                    </h2>
+                  </div>
 
+                  {/* Options List */}
+                  <div className="grid gap-2.5 flex-1 mb-3">
                     {currentQuestion.options.map((opt, i) => {
                       const letter = String.fromCharCode(65 + i)
                       const isSelected = answers[currentQuestion.id] === opt
                       const isCorrect = opt === currentQuestion.correct_answer
                       const hasAnswered = !!answers[currentQuestion.id]
 
-                      let stateClasses = "border-border"
-                      let badgeClasses = "bg-muted text-muted-foreground"
+                      let stateClasses = "border-border/50 bg-muted/30"
+                      let badgeClasses = "bg-foreground/5 text-primary border-border/50"
 
                       if (hasAnswered) {
                         if (isCorrect) {
-                          stateClasses = "border-green-500 bg-green-50/50 dark:bg-green-900/20 dark:border-green-400"
-                          badgeClasses = "bg-green-500 text-white"
+                          stateClasses = "border-green-500/50 bg-green-50/80 dark:bg-green-500/10 dark:border-green-500/30"
+                          badgeClasses = "bg-green-500 text-white border-green-500"
                         } else if (isSelected) {
-                          stateClasses = "border-red-500 bg-red-50/50 dark:bg-red-900/20 dark:border-red-400"
-                          badgeClasses = "bg-red-500 text-white"
+                          stateClasses = "border-red-500/50 bg-red-50/80 dark:bg-red-500/10 dark:border-red-500/30"
+                          badgeClasses = "bg-red-500 text-white border-red-500"
                         } else {
-                          stateClasses = "border-border opacity-50"
+                          stateClasses = "border-border/20 opacity-40"
                         }
                       } else if (isSelected) {
-                        stateClasses = "border-[#21479B] bg-blue-50/50 dark:bg-blue-900/20 dark:border-blue-400"
-                        badgeClasses = "bg-[#21479B] text-white"
+                        stateClasses = "border-[#21479B] bg-blue-50 dark:bg-[#21479B]/10 dark:border-[#21479B]/50"
+                        badgeClasses = "bg-[#21479B] text-white border-[#21479B]"
                       }
 
                       return (
@@ -437,15 +453,15 @@ export default function QuizPage() {
                           type="button"
                           disabled={hasAnswered || isSubmitting}
                           onClick={() => setAnswers(prev => ({ ...prev, [currentQuestion.id]: opt }))}
-                          className={`flex items-center justify-start p-3 rounded-xl border-2 transition-all w-full text-left
-                            ${!hasAnswered ? 'cursor-pointer hover:bg-muted/50 active:scale-[0.99]' : 'cursor-default'}
+                          className={`group flex items-center justify-start p-2 rounded-xl border-2 transition-all w-full text-left
+                            ${!hasAnswered ? 'cursor-pointer hover:border-[#21479B]/50 hover:bg-blue-50/50 dark:hover:bg-[#21479B]/5 active:scale-[0.98]' : 'cursor-default'}
                             ${stateClasses}`}
                         >
-                          <div className="flex items-center gap-4 flex-1">
-                            <span className={`flex-shrink-0 flex items-center justify-center h-8 w-8 rounded-lg font-bold text-sm transition-colors ${badgeClasses}`}>
+                          <div className="flex items-center gap-3 flex-1">
+                            <span className={`flex-shrink-0 flex items-center justify-center h-8 w-8 md:h-9 md:w-9 rounded-lg font-bold text-sm border-2 transition-all ${badgeClasses}`}>
                               {letter}
                             </span>
-                            <span className={`text-base font-medium transition-colors 
+                            <span className={`text-sm md:text-base font-semibold transition-colors 
                               ${hasAnswered && isCorrect ? 'text-green-700 dark:text-green-300' : 'text-foreground'}
                               ${hasAnswered && isSelected && !isCorrect ? 'text-red-700 dark:text-red-300' : ''}
                               ${!hasAnswered && isSelected ? 'text-[#21479B] dark:text-blue-300' : ''}`}>
@@ -455,38 +471,47 @@ export default function QuizPage() {
 
                           {hasAnswered && isCorrect && (
                             <CheckCircle2 className="h-5 w-5 text-green-500 ml-auto animate-in zoom-in duration-300" />
+
                           )}
                           {hasAnswered && isSelected && !isCorrect && (
                             <XCircle className="h-5 w-5 text-red-500 ml-auto animate-in zoom-in duration-300" />
+
                           )}
                         </button>
                       )
                     })}
                   </div>
-                </CardContent>
 
-                {/* Action Button & Placeholder Alert */}
-                <div className="flex justify-end p-3 md:p-6 pt-0">
-                  {answers[currentQuestion.id] ? (
-                    <div className="w-full md:w-auto animate-in fade-in slide-in-from-bottom-2 duration-300">
-                      <Button
-                        onClick={handleNext}
-                        disabled={isSubmitting}
-                        className="bg-[#21479B] hover:bg-[#1a3778] text-white px-8 py-6 rounded-xl text-lg w-full md:w-auto shadow-lg shadow-blue-900/10 transition-all active:scale-95"
-                      >
-                        {isSubmitting ? 'Menyimpan...' : (currentIndex === questions.length - 1 ? 'Selesaikan Tes ✓' : 'Soal Selanjutnya →')}
-                      </Button>
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-3 px-6 py-4 rounded-xl bg-muted/50 border border-muted text-muted-foreground w-full md:w-auto animate-in fade-in slide-in-from-bottom-2 duration-300">
-                      <AlertCircle className="h-5 w-5 text-muted-foreground" />
-                      <span className="text-sm md:text-base font-medium">Silakan pilih jawaban untuk melanjutkan</span>
-                    </div>
-                  )}
-                </div>
-              </div>
+                  {/* Submission Footer area within Card */}
+                  <div className="mt-auto">
+                    {answers[currentQuestion.id] ? (
+                      <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
+                        <Button
+                          onClick={handleNext}
+                          disabled={isSubmitting}
+                          className="w-full bg-[#21479B] hover:bg-[#1a3778] text-white py-6 rounded-xl text-lg font-bold shadow-lg shadow-blue-900/20 transition-all hover:scale-[1.01] active:scale-95 flex items-center justify-center gap-2"
+                        >
+                          {isSubmitting ? (
+                            <Loader2 className="h-5 w-5 animate-spin" />
+                          ) : (
+                            <>
+                              {currentIndex === questions.length - 1 ? 'Selesaikan tes' : 'Soal selanjutnya'}
+                              {currentIndex !== questions.length - 1 && <span>→</span>}
+                            </>
+                          )}
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2.5 p-3.5 rounded-xl bg-muted/50 border border-muted/50 text-muted-foreground animate-in fade-in slide-in-from-bottom-2 duration-300">
+                        <AlertCircle className="h-4 w-4 text-[#21479B] animate-pulse" />
+                        <span className="text-xs">Silakan pilih jawaban untuk melanjutkan...</span>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
             </div>
-          </Card>
+          </div>
         </div>
       </main>
 

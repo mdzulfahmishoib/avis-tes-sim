@@ -8,10 +8,13 @@ export default function Header() {
   return (
     <header className="fixed top-0 w-full border-b bg-background/80 backdrop-blur-md z-50">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
-        <div className="flex items-center gap-2 font-bold text-[#21479B] dark:text-white text-xl">
+        <Link
+          href="/"
+          className="flex items-center gap-2 font-bold text-[#21479B] dark:text-white text-xl hover:opacity-80 transition-opacity cursor-pointer"
+        >
           <ShieldCheck className="h-8 w-8" />
           <span>SIMTERA</span>
-        </div>
+        </Link>
         <div className="flex items-center gap-3">
           <Link
             href="https://tako.id/fahmi.shoib"

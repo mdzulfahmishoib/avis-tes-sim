@@ -46,7 +46,7 @@ export default async function AdminDashboardPage() {
         <Link href="/admin/results" className="transition-transform hover:scale-[1.02] active:scale-95">
           <Card className="border-l-4 border-l-blue-500 hover:bg-blue-50/50 dark:hover:bg-transparent cursor-pointer">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-blue-700">Total Simulasi Dilakukan</CardTitle>
+              <CardTitle className="text-sm font-medium text-blue-700 dark:text-blue-500">Total Simulasi Dilakukan</CardTitle>
               <BarChart3 className="h-4 w-4 text-blue-500" />
             </CardHeader>
             <CardContent>
@@ -58,10 +58,10 @@ export default async function AdminDashboardPage() {
 
         {/* Card: Total Questions */}
         <Link href="/admin/questions" className="transition-transform hover:scale-[1.02] active:scale-95">
-          <Card className="border-l-4 border-l-green-400 hover:bg-green-50/50 dark:hover:bg-transparent cursor-pointer">
+          <Card className="border-l-4 border-l-green-600 hover:bg-green-50/50 dark:hover:bg-transparent cursor-pointer">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-green-400">Total Questions</CardTitle>
-              <FileQuestion className="h-4 w-4 text-green-400" />
+              <CardTitle className="text-sm font-medium text-green-600">Total Questions</CardTitle>
+              <FileQuestion className="h-4 w-4 text-green-600" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{questionCount || 0}</div>
@@ -74,7 +74,7 @@ export default async function AdminDashboardPage() {
         <Link href="/admin/users" className="transition-transform hover:scale-[1.02] active:scale-95">
           <Card className="border-l-4 border-l-amber-500 hover:bg-amber-50/50 dark:hover:bg-transparent cursor-pointer">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium text-amber-700">Total Admin Users</CardTitle>
+              <CardTitle className="text-sm font-medium text-amber-700 dark:text-amber-500">Total Admin Users</CardTitle>
               <Users className="h-4 w-4 text-amber-500" />
             </CardHeader>
             <CardContent>

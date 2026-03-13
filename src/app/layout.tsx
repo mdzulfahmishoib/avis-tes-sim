@@ -23,6 +23,7 @@ export default function RootLayout({
     <html lang="id" className={inter.variable} suppressHydrationWarning>
       <body
         className={`${inter.className} antialiased`}
+        suppressHydrationWarning
       >
         <ThemeProvider
           attribute="class"

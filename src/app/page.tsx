@@ -31,7 +31,7 @@ export default async function Home() {
       {/* Main Content */}
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="relative pt-28 pb-12 lg:pt-30 lg:pb-20 overflow-hidden">
+        <section className="relative pt-28 pb-12 lg:pt-28 lg:pb-20 overflow-hidden">
           {/* Background Decorations */}
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full -z-10">
             <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[60%] bg-blue-400/20 blur-[120px] rounded-full" />
@@ -42,7 +42,7 @@ export default async function Home() {
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               {/* Left Column: Content */}
               <div className="text-left space-y-8 animate-in fade-in slide-in-from-left duration-1000">
-                <div className=" mb-4 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-green-200 bg-green-50/50 dark:bg-transparent text-green-600 text-xs font-bold tracking-wider uppercase dark:text-green-400 dark:border-green-500/30">
+                <div className=" mb-4 inline-flex items-center gap-2 px-2 py-1 md:px-4 md:py-2 rounded-full border border-green-200 bg-green-50/50 dark:bg-transparent text-green-600 text-[10px] md:text-xs font-bold tracking-wider uppercase dark:text-green-400 dark:border-green-500/30">
                   <span className="relative flex h-2 w-2">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-green-600"></span>
@@ -59,8 +59,8 @@ export default async function Home() {
                   </h1>
                   <p className="text-md md:text-lg text-muted-foreground max-w-xl">
                     Platform simulasi ujian teori SIM terlengkap di Indonesia.
-                    Dilengkapi ribuan soal terbaru yang disusun berdasarkan
-                    <span className="font-semibold text-foreground"> E-book Korlantas Polri {new Date().getFullYear()}</span>
+                    Dilengkapi soal terbaru yang disusun berdasarkan
+                    <span className="font-semibold text-foreground"> E-book Korlantas Polri</span>
                   </p>
                 </div>
 
@@ -70,7 +70,7 @@ export default async function Home() {
                     href="#download-ebook"
                     className={cn(
                       buttonVariants({ size: "lg", variant: "outline" }),
-                      "w-fit border-emerald-500 text-emerald-600 dark:bg-transparent hover:bg-emerald-50 dark:border-emerald-500/50 dark:text-emerald-400 dark:hover:bg-emerald-500/10 text-base font-bold px-6 py-5 sm:px-8 sm:py-6 rounded-2xl shadow-sm flex items-center gap-2 transition-all hover:scale-[1.02] active:scale-95"
+                      "w-fit border-emerald-500 text-emerald-600 dark:bg-transparent hover:bg-emerald-50 dark:border-emerald-500/50 dark:text-emerald-400 dark:hover:bg-emerald-500/10 text-base hover:text-emerald-600 font-bold px-6 py-5 sm:px-8 sm:py-6 rounded-2xl shadow-sm flex items-center gap-2 transition-all hover:scale-[1.02] active:scale-95"
                     )}
                   >
                     <BookOpen className="h-5 w-5" />
@@ -108,7 +108,7 @@ export default async function Home() {
 
               {/* Right Column: Visual */}
               <div className="relative hidden lg:flex justify-end items-center animate-in slide-in-from-right duration-1000 delay-200">
-                <div className="relative z-10 w-full max-w-lg translate-x-12 xl:translate-x-12">
+                <div className="relative z-10 w-full max-w-lg translate-x-12 xl:translate-x-14">
                   <img
                     src="https://txdgzmrkpptjzidfvyyj.supabase.co/storage/v1/object/public/ebook-avis/hero-avatar.webp"
                     alt="Simtera Hero Avatar"
