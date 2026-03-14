@@ -173,11 +173,11 @@ export function EditQuestionModal({ question }: { question: Question }) {
 
             <div className="space-y-2">
               <Label htmlFor="external_url">External URL (Image / YouTube)</Label>
-              <Input 
-                id="external_url" 
-                name="external_url" 
-                defaultValue={question.media_url && !question.media_url.includes('supabase.co') ? question.media_url : ""} 
-                placeholder="https://i.ibb.co.com/... or https://youtube.com/..." 
+              <Input
+                id="external_url"
+                name="external_url"
+                defaultValue={question.media_url && !question.media_url.includes('supabase.co') ? question.media_url : ""}
+                placeholder="https://images.com/... or https://youtube.com/..."
               />
             </div>
           </div>
@@ -200,11 +200,11 @@ export function EditQuestionModal({ question }: { question: Question }) {
 
               <div className="space-y-2">
                 <Label htmlFor="external_audio_url">External Audio URL (Optional)</Label>
-                <Input 
-                  id="external_audio_url" 
-                  name="external_audio_url" 
-                  defaultValue={question.audio_url && !question.audio_url.includes('supabase.co') ? question.audio_url : ""} 
-                  placeholder="https://..." 
+                <Input
+                  id="external_audio_url"
+                  name="external_audio_url"
+                  defaultValue={question.audio_url && !question.audio_url.includes('supabase.co') ? question.audio_url : ""}
+                  placeholder="https://..."
                 />
               </div>
             </div>

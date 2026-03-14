@@ -158,7 +158,7 @@ export function CreateQuestionModal() {
 
             <div className="space-y-2">
               <Label htmlFor="external_url">External URL (Image / YouTube)</Label>
-              <Input id="external_url" name="external_url" placeholder="https://i.ibb.co.com/... or https://youtube.com/..." />
+              <Input id="external_url" name="external_url" placeholder="https://images.com/... or https://youtube.com/..." />
             </div>
           </div>
 
@@ -171,7 +171,7 @@ export function CreateQuestionModal() {
                 </Label>
                 <Input id="audio" name="audio" type="file" accept="audio/*" />
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="external_audio_url">External Audio URL (Optional)</Label>
                 <Input id="external_audio_url" name="external_audio_url" placeholder="https://..." />
