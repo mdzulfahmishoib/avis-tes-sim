@@ -398,9 +398,9 @@ export default function QuizPage() {
                   {currentQuestion.media_type === "video" ? (
                     currentQuestion.media_url?.includes('youtube.com') || currentQuestion.media_url?.includes('youtu.be') ? (
                       <iframe
-                        src={`https://www.youtube.com/embed/${getYouTubeID(currentQuestion.media_url || "")}?autoplay=1&rel=0`}
+                        src={`https://www.youtube.com/embed/${getYouTubeID(currentQuestion.media_url || "")}?rel=0`}
                         className="w-full h-full"
-                        allow="autoplay; encrypted-media;"
+                        allow="encrypted-media;"
                       />
                     ) : (
                       <video
