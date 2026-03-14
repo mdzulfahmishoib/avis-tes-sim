@@ -22,7 +22,7 @@ export async function createQuestion(formData: FormData) {
   const correctAnswer = formData.get('correct_answer') as string
   const mediaFile = formData.get('media') as File | null
   const audioFile = formData.get('audio') as File | null
-  const youtubeUrl = formData.get('youtube_url') as string | null
+  const externalUrl = formData.get('external_url') as string | null
 
   // Options
   let options: string[] = []
@@ -43,11 +43,16 @@ export async function createQuestion(formData: FormData) {
   let mediaUrl = null
   let mediaType = null
   let audioUrl = null
- 
-  // Handle YouTube URL (Priority over file upload for mitigating egress)
-  if (youtubeUrl && youtubeUrl.trim().length > 0) {
-    mediaUrl = youtubeUrl
-    mediaType = 'video'
+
+  // Handle External URL (Priority over file upload for mitigating egress)
+  if (externalUrl && externalUrl.trim().length > 0) {
+    const url = externalUrl.trim()
+    mediaUrl = url
+    if (url.includes('youtube.com') || url.includes('youtu.be') || url.endsWith('.mp4') || url.endsWith('.webm')) {
+      mediaType = 'video'
+    } else {
+      mediaType = 'image'
+    }
   } else if (mediaFile && mediaFile.size > 0) {
     // Handle media file upload
     const fileExt = mediaFile.name.split('.').pop()
@@ -108,7 +113,7 @@ export async function updateQuestion(id: string, formData: FormData) {
   const correctAnswer = formData.get('correct_answer') as string
   const mediaFile = formData.get('media') as File | null
   const audioFile = formData.get('audio') as File | null
-  const youtubeUrl = formData.get('youtube_url') as string | null
+  const externalUrl = formData.get('external_url') as string | null
 
   // Options
   let options: string[] = []
@@ -135,10 +140,15 @@ export async function updateQuestion(id: string, formData: FormData) {
     options,
   }
 
-  // Handle YouTube URL
-  if (youtubeUrl && youtubeUrl.trim().length > 0) {
-    updateData.media_url = youtubeUrl
-    updateData.media_type = 'video'
+  // Handle External URL
+  if (externalUrl && externalUrl.trim().length > 0) {
+    const url = externalUrl.trim()
+    updateData.media_url = url
+    if (url.includes('youtube.com') || url.includes('youtu.be') || url.endsWith('.mp4') || url.endsWith('.webm')) {
+      updateData.media_type = 'video'
+    } else {
+      updateData.media_type = 'image'
+    }
   } else if (mediaFile && mediaFile.size > 0) {
     // Handle media file upload
     const fileExt = mediaFile.name.split('.').pop()
