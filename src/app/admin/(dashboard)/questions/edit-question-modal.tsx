@@ -172,12 +172,12 @@ export function EditQuestionModal({ question }: { question: Question }) {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="youtube_url">YouTube URL (Alternative to Video File)</Label>
+              <Label htmlFor="external_url">External URL (Image / YouTube)</Label>
               <Input 
-                id="youtube_url" 
-                name="youtube_url" 
-                defaultValue={question.media_url && (question.media_url.includes('youtube') || question.media_url.includes('youtu.be')) ? question.media_url : ""} 
-                placeholder="https://youtube.com/watch?v=..." 
+                id="external_url" 
+                name="external_url" 
+                defaultValue={question.media_url && !question.media_url.includes('supabase.co') ? question.media_url : ""} 
+                placeholder="https://i.ibb.co.com/... or https://youtube.com/..." 
               />
             </div>
           </div>
