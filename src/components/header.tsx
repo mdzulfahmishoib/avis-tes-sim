@@ -27,7 +27,9 @@ export default function Header() {
             <Heart className="h-4 w-4 fill-current animate-pulse" />
             <span>Donasi</span>
           </Link>
-          <ThemeToggle hideText />
+          <div className="flex items-center gap-2 border-l pl-2 border-muted">
+            <ThemeToggle hideText />
+          </div>
         </div>
       </div>
     </header>

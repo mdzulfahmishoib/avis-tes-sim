@@ -53,15 +53,15 @@ export default async function Home() {
                   Simulasi & Test Edukasi Berkendara
                 </div>
 
-                <div className="space-y-4 md:mb-4">
+                <div className="space-y-4 md:mb-4 mb-4">
                   <h1 className="text-4xl md:text-6xl font-black tracking-tighter md:leading-[1.1]">
                     Raih SIM Anda <br />
                     <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#21479B] to-blue-500">
                       Lebih Percaya Diri
                     </span>
                   </h1>
-                  <p className="text-md md:text-lg text-muted-foreground max-w-xl">
-                    Platform simulasi ujian teori SIM terlengkap di Indonesia.
+                  <p className="text-md md:text-lg text-muted-foreground max-w-md">
+                    Platform simulasi ujian teori SIM pertama dan terlengkap di Indonesia.
                     Dilengkapi soal terbaru yang disusun berdasarkan
                     <span className="font-semibold text-foreground"> E-book Korlantas Polri</span>
                   </p>
@@ -195,7 +195,7 @@ export default async function Home() {
         {/* Stats Section */}
         {total > 0 && (
 
-          <section className="py-24 px-4 bg-gradient-to-b from-slate-50 to-white dark:from-[#171717] dark:to-[#0a0a0a] overflow-hidden">
+          <section className="py-20 px-4 bg-gradient-to-b from-slate-50 to-white dark:from-[#171717] dark:to-[#0a0a0a] overflow-hidden">
             <div className="container mx-auto max-w-6xl">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
 

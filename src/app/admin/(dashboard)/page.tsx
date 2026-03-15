@@ -129,7 +129,7 @@ export default async function AdminDashboardPage() {
               <XCircle className="h-4 w-4 text-red-500" />
             </CardHeader>
             <CardContent>
-              <div className="text-3xl font-bold text-red-500 dark:text-red-400">{failed}</div>
+              <div className="text-3xl font-bold text-red-500 dark:text-red-500">{failed}</div>
               <p className="text-xs text-muted-foreground mt-1">peserta belum lulus</p>
             </CardContent>
           </Card>

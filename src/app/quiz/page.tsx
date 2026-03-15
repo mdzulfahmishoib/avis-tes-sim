@@ -404,7 +404,7 @@ export default function QuizPage() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="text-red-500 border border-red-500 hover:text-white hover:bg-red-500 dark:hover:bg-red-500 dark:hover:text-white px-2 md:px-3"
+                      className="text-red-500 border border-red-500 hover:text-white hover:bg-red-500 dark:hover:bg-red-600 dark:text-red-600 dark:border-red-600 dark:hover:text-white px-2 md:px-3"
                       title="Keluar dari Quiz"
                     />
                   }
@@ -429,7 +429,7 @@ export default function QuizPage() {
                     </DialogClose>
                     <Button
                       variant="destructive"
-                      className="w-full h-10 sm:w-auto bg-red-600 hover:bg-red-700 text-white"
+                      className="w-full h-10 sm:w-auto bg-red-600 hover:bg-red-700 dark:bg-red-600 dark:hover:bg-red-700 text-white"
                       onClick={() => router.push("/")}
                     >
                       Ya, Keluar
@@ -502,7 +502,7 @@ export default function QuizPage() {
                           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
                           <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
                         </span>
-                        <span>{currentQuestion.category}</span>
+                        <span>{currentQuestion.category} - {currentQuestion.module}</span>
                       </div>
                     </div>
                     <h2 className="text-lg md:text-xl font-bold leading-tight text-foreground">

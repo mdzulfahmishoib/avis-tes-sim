@@ -73,7 +73,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
             </div>
 
             <form action={logout} className="hidden sm:block">
-              <Button type="submit" variant="outline" size="sm" className="gap-2 text-red-500 hover:text-red-600 hover:bg-red-50 border-red-200 dark:border-red-900/30 dark:hover:bg-red-950/20">
+              <Button type="submit" variant="outline" size="sm" className="gap-2 text-red-500 border border-red-500 hover:text-white hover:bg-red-500 dark:hover:bg-red-600 dark:text-red-600 dark:border-red-600 dark:hover:text-white">
                 <LogOut className="h-4 w-4" />
                 <span>Logout</span>
               </Button>
